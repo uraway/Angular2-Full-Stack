@@ -79,7 +79,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       ctx.font = "bold 120px 'ＭＳ Ｐゴシック'";
       ctx.fillStyle = "black";
-      ctx.fillText(`${i}`, 170, 300);
+      ctx.fillText(`${i}`, 200, 320);
     });
   }
 
@@ -93,7 +93,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   randomXY() {
-    return Math.random() * 250 + 100;
+    return Math.random() * 280 + 120;
   }
 
   ngOnDestroy(): void {
@@ -136,7 +136,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
       var ctx = this.context;
       ctx.font = "bold 120px 'ＭＳ Ｐゴシック'";
       ctx.fillStyle = "black";
-      ctx.fillText("0", 170, 300);
+      ctx.fillText("0", 220, 200);
       this.finishable = true;
     }
   }
