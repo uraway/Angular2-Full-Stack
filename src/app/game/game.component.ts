@@ -17,7 +17,8 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   score = 100;
   answer = 0;
   ans = "";
-  buttonDisabled = false;
+  diff = 0;
+  finishable = false;
   context:CanvasRenderingContext2D;
 
   @ViewChild("myCanvas") myCanvas: any;
@@ -35,6 +36,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.finishable = false;
     this.getQuizes();
   }
 
@@ -108,14 +110,12 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   submit(userAnswer: number): void {
-    this.buttonDisabled = true;
     this.checkAnswer(userAnswer);
   }
 
   next(): void {
-    this.buttonDisabled = false;
     if (this.stage === 5) {
-      this.finish(this.score);
+      this.finishable = true;
     } else {
       this.stage += 1;
       this.currentQuiz = this.givenQuizes[this.stage];
@@ -125,15 +125,19 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
 
   checkAnswer(userAnswer: number): void {
     const correctAnswer = this.currentQuiz.value;
-    const diff = Math.abs(correctAnswer - userAnswer);
+    this.diff = Math.abs(correctAnswer - userAnswer);
     this.displayAns(`${correctAnswer}`);
 
-    this.score -= diff;
+    this.score -= this.diff;
     this.clear();
-    this.balloons(this.score, diff);
+    this.balloons(this.score, this.diff);
 
     if (this.score <= 0) {
-      this.finish(0);
+      var ctx = this.context;
+      ctx.font = "bold 120px 'ＭＳ Ｐゴシック'";
+      ctx.fillStyle = "black";
+      ctx.fillText("0", 170, 300);
+      this.finishable = true;
     }
   }
 
@@ -141,11 +145,10 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ans = ans;
   }
 
-  finish(finalScore: number): void {
-    window.setTimeout(() => {
-      localStorage.setItem('score', String(finalScore));
-      this.router.navigate(['result']);
-    }, 2000);
+  finish(): void {
+    if (this.score < 0) this.score = 0;
+    localStorage.setItem('score', String(this.score));
+    this.router.navigate(['result']);
   }
 
   shuffle(array: any) {

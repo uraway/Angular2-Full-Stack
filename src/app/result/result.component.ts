@@ -9,7 +9,7 @@ import { ToastComponent } from '../shared/toast/toast.component';
 
 @Component({
   selector: 'app-result',
-  templateUrl: 'result.component.html'
+  templateUrl: './result.component.html'
 })
 export class ResultComponent {
   score = localStorage.getItem('score');
