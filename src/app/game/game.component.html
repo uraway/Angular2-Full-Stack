@@ -1,31 +1,31 @@
-<h2>Quiz</h2>
+<h1 class="center">
+  <label class="glyphicon glyphicon-time" aria-hidden="true"></label>
+  {{timer}}
+</h1>
 <div *ngIf="currentQuiz">
-  <form (submit)="submit(answer.value)" class="form-horizontal">
-    <div class="center jumbotron">
-      <p>
-        <br /> Q. {{stage + 1}}. {{currentQuiz.text}}
-      </p>
-    </div>
-
-    <h1 *ngIf="ans" class="center">
-        {{ans}} %
-      <label *ngIf="diff > 0" class="text-danger">
-         (- {{diff}})
-      </label>
-    </h1>
-
+  <div class="center jumbotron">
+    <p>
+      <br /> Q. {{stage + 1}}. {{currentQuiz.text}}
+    </p>
+  </div>
+  <h1 *ngIf="ans" class="center">
+    {{ans}} %
+    <label *ngIf="diff > 0" class="text-danger">
+      (- {{diff}})
+    </label>
+  </h1>
+  <form (submit)="submit(answer.value)" class="form-inline center">
     <div class="form-group form-group-lg">
-      <label class="col-sm-2 control-label">Your Answer: </label>
-      <div class="col-sm-8">
-        <input type="number" required #answer class="form-control" min=0 />
+      <div class="input-group">
+        <input type="number" required #answer class="form-control" min=0 max=100 />
+        <div class="input-group-addon">%</div>
       </div>
-      <button type="submit" *ngIf="!ans && !finishable" class="btn btn-primary btn-lg col-sm-2">Submit</button>
-      <button *ngIf="ans && !finishable" class="btn btn-default btn-lg col-sm-2 pull-right" (click)="next()">NEXT</button>
-      <button *ngIf="finishable" class="btn btn-info btn-lg col-sm-2 pull-right" (click)="finish()">Finish</button>
     </div>
-
+    <button type="submit" *ngIf="!ans && !finishable" class="btn btn-primary btn-lg">Submit</button>
+    <button *ngIf="ans && !finishable" class="btn btn-default btn-lg" (click)="next()">NEXT</button>
+    <button *ngIf="finishable" class="btn btn-info btn-lg" (click)="finish()">Finish</button>
   </form>
 </div>
 <div class="box">
-  <canvas #myCanvas id="myCanvas" width="800" height="400"></canvas>
+  <canvas #myCanvas id="myCanvas" width="800" height="800"></canvas>
 </div>

@@ -14,7 +14,7 @@ app.use('/', express.static(__dirname + '/../../dist'));
 app.use(morgan('dev'));
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/test');
+mongoose.connect('mongodb://database/test');
 var db = mongoose.connection;
 mongoose.Promise = global.Promise;
 
@@ -97,7 +97,7 @@ db.once('open', function() {
   });
 
   app.listen(app.get('port'), function() {
-    console.log('Angular 2 Full Stack listening on port '+app.get('port'));
+    console.log('Angular 2 Full Stack listening on ' + app.get('ip') + ':' + app.get('port'));
   });
 });
 

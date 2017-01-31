@@ -19,6 +19,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   ans = "";
   diff = 0;
   finishable = false;
+  timer = 60;
   context:CanvasRenderingContext2D;
 
   @ViewChild("myCanvas") myCanvas: any;
@@ -38,6 +39,18 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.finishable = false;
     this.getQuizes();
+    this.tick();
+  }
+
+  tick() {
+    var id = window.setInterval(() => {
+      this.count();
+      if (this.timer === 0) window.clearInterval(id);
+    }, 1000);
+  }
+
+  count() {
+    this.timer--;
   }
 
   balloons(i: number, diff: number): void {
@@ -57,112 +70,110 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
         window.clearInterval(id);　//idをclearIntervalで指定している
       }}, 5);
 
-    requestAnimationFrame(() => {
-      for (let l = 0; l < i; l++) {
-        var ctx = this.context;
-        var red = new Image();
-        var blue = new Image();
-        var yellow = new Image();
-        var lime = new Image();
-        var purple = new Image();
+      requestAnimationFrame(() => {
+        for (let l = 0; l < i; l++) {
+          var ctx = this.context;
+          var red = new Image();
+          var blue = new Image();
+          var yellow = new Image();
+          var lime = new Image();
+          var purple = new Image();
 
-        ctx.beginPath();
-        red.src = "../../assets/images/balloon_red.png";
-        blue.src = "../../assets/images/balloon_blue.png";
-        yellow.src = "../../assets/images/balloon_yellow.png";
-        lime.src = "../../assets/images/balloon_lime.png";
-        purple.src = "../../assets/images/balloon_purple.png";
+          ctx.beginPath();
+          red.src = "../../assets/images/balloon_red.png";
+          blue.src = "../../assets/images/balloon_blue.png";
+          yellow.src = "../../assets/images/balloon_yellow.png";
+          lime.src = "../../assets/images/balloon_lime.png";
+          purple.src = "../../assets/images/balloon_purple.png";
 
-        purple.onload = () => {
-          ctx.drawImage(this.randomOfArray([red, blue, yellow, lime, purple]), this.randomXY(), this.randomXY(), 40, 60);
+          purple.onload = () => {
+            ctx.drawImage(this.randomOfArray([red, blue, yellow, lime, purple]), this.randomXY(), this.randomXY(), 40, 60);
+          }
         }
-      }
-      ctx.font = "bold 120px 'ＭＳ Ｐゴシック'";
-      ctx.fillStyle = "black";
-      ctx.fillText(`${i}`, 170, 300);
-    });
-  }
+        ctx.font = "bold 120px 'ＭＳ Ｐゴシック'";
+        ctx.fillStyle = "black";
+        ctx.fillText(`${i}`, 200, 320);
+      });
+    }
 
-  clear() {
-    var ctx = this.context;
-    ctx.clearRect(0, 0, 1200, 800);
-  }
+    clear() {
+      var ctx = this.context;
+      ctx.clearRect(0, 0, 1200, 800);
+    }
 
-  randomOfArray(ary: Array<any>){
-    return ary[Math.floor(Math.random() * ary.length)];
-  }
+    randomOfArray(ary: Array<any>){
+      return ary[Math.floor(Math.random() * ary.length)];
+    }
 
-  randomXY() {
-    return Math.random() * 250 + 100;
-  }
+    randomXY() {
+      return Math.random() * 280 + 120;
+    }
 
-  ngOnDestroy(): void {
-  }
+    ngOnDestroy(): void {
+    }
 
-  getQuizes(): void {
-    this.dataService.getQuizes().subscribe(
-      data => {
-        this.givenQuizes = this.shuffle(data).slice(0, 5);
-        this.currentQuiz = this.givenQuizes[0];
-      },
-      error => window.console.log(error),
-    );
-  }
+    getQuizes(): void {
+      this.dataService.getQuizes().subscribe(
+        data => {
+          this.givenQuizes = this.shuffle(data).slice(0, 5);
+          this.currentQuiz = this.givenQuizes[0];
+        },
+        error => window.console.log(error),
+      );
+    }
 
-  submit(userAnswer: number): void {
-    this.checkAnswer(userAnswer);
-  }
+    submit(userAnswer: number): void {
+      this.checkAnswer(userAnswer);
+      if (this.stage === 4) this.finishable = true;
+    }
 
-  next(): void {
-    if (this.stage === 5) {
-      this.finishable = true;
-    } else {
+    next(): void {
       this.stage += 1;
       this.currentQuiz = this.givenQuizes[this.stage];
       this.ans = "";
     }
-  }
 
-  checkAnswer(userAnswer: number): void {
-    const correctAnswer = this.currentQuiz.value;
-    this.diff = Math.abs(correctAnswer - userAnswer);
-    this.displayAns(`${correctAnswer}`);
+    checkAnswer(userAnswer: number): void {
+      const correctAnswer = this.currentQuiz.value;
+      this.diff = Math.abs(correctAnswer - userAnswer);
+      this.displayAns(`${correctAnswer}`);
 
-    this.score -= this.diff;
-    this.clear();
-    this.balloons(this.score, this.diff);
+      this.score -= this.diff;
+      this.clear();
+      this.balloons(this.score, this.diff);
 
-    if (this.score <= 0) {
-      var ctx = this.context;
-      ctx.font = "bold 120px 'ＭＳ Ｐゴシック'";
-      ctx.fillStyle = "black";
-      ctx.fillText("0", 170, 300);
-      this.finishable = true;
-    }
-  }
-
-  displayAns(ans: string): void {
-    this.ans = ans;
-  }
-
-  finish(): void {
-    if (this.score < 0) this.score = 0;
-    localStorage.setItem('score', String(this.score));
-    this.router.navigate(['result']);
-  }
-
-  shuffle(array: any) {
-    let n = array.length;
-    let t: any;
-    let i: any;
-
-    while(n) {
-      i = Math.floor(Math.random() * n--);
-      t = array[n];
-      array[n] = array[i];
-      array[i] = t;
+      if (this.score <= 0) {
+        var ctx = this.context;
+        ctx.font = "bold 120px 'ＭＳ Ｐゴシック'";
+        ctx.fillStyle = "black";
+        ctx.fillText("0", 220, 200);
+        this.finishable = true;
+      }
     }
 
-    return array;
+    displayAns(ans: string): void {
+      this.ans = ans;
+    }
+
+    finish(): void {
+      if (this.score < 0) this.score = 0;
+      var score = this.score * this.timer;
+      localStorage.setItem('score', String(score));
+      this.router.navigate(['result']);
+    }
+
+    shuffle(array: any) {
+      let n = array.length;
+      let t: any;
+      let i: any;
+
+      while(n) {
+        i = Math.floor(Math.random() * n--);
+        t = array[n];
+        array[n] = array[i];
+        array[i] = t;
+      }
+
+      return array;
+    }
   }
-}
