@@ -6,36 +6,51 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { AboutComponent } from './about/about.component';
+import { DashboardComponent }   from './dashboard/dashboard.component';
+import { GameComponent } from './game/game.component';
+import { QuizesComponent } from './quizes/quizes.component'
+import { AddQuizComponent } from './quizes/add-quiz.component';
+import { ResultComponent } from './result/result.component';
+
 import { DataService } from './services/data.service';
 
 import { ToastComponent } from './shared/toast/toast.component';
 
 const routing = RouterModule.forRoot([
-    { path: '',      component: HomeComponent },
-    { path: 'about', component: AboutComponent }
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'dashboard',  component: DashboardComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'game', component: GameComponent },
+  { path: 'quizes', component: QuizesComponent },
+  { path: 'quizes/add', component: AddQuizComponent },
+  { path: 'result', component: ResultComponent }
 ]);
 
+
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    AboutComponent,
-    ToastComponent
-  ],
   imports: [
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule,
+    routing,
     HttpModule,
-    routing
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  declarations: [
+    AppComponent,
+    DashboardComponent,
+    HomeComponent,
+    GameComponent,
+    QuizesComponent,
+    AddQuizComponent,
+    ResultComponent,
+    ToastComponent
   ],
   providers: [
     DataService,
     ToastComponent
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ]
 })
 
 export class AppModule { }

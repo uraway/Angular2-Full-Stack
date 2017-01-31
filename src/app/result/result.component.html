@@ -1,0 +1,13 @@
+<form class="form-horizontal" (ngSubmit)="addUser()" [formGroup]="addUserForm">
+  <h2>Score: {{score}}</h2>
+  <div class="form-group">
+    <label class="col-sm-4 control-label"></label>
+    <div class="col-sm-4">
+      <input class="form-control" formControlName="name" name="name" placeholder="Name" />
+    </div>
+    <button class="btn btn-default col-sm-2" type="submit" [disabled]="!addUserForm.valid">Save Score</button>
+  </div>
+</form>
+<div class="center">
+  <button class="btn btn-primary btn-lg" routerLink="/game">Retry?</button>
+</div>

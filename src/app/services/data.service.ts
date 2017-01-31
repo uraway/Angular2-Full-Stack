@@ -12,20 +12,32 @@ export class DataService {
 
   constructor(private http: Http) { }
 
-  getCats(): Observable<any> {
-    return this.http.get('/cats').map(res => res.json());
+  getQuizes(): Observable<any> {
+    return this.http.get('/api/quizes').map(res => res.json());
   }
 
-  addCat(cat): Observable<any> {
-    return this.http.post('/cat', JSON.stringify(cat), this.options);
+  getQuiz(quiz: any): Observable<any> {
+    return this.http.get(`/api/quizes${quiz._id}`).map(res => res.json());
   }
 
-  editCat(cat): Observable<any> {
-    return this.http.put(`/cat/${cat._id}`, JSON.stringify(cat), this.options);
+  addQuiz(quiz: any): Observable<any> {
+    return this.http.post('/api/quizes', JSON.stringify(quiz), this.options)
   }
 
-  deleteCat(cat): Observable<any> {
-    return this.http.delete(`/cat/${cat._id}`, this.options);
+  editQuiz(quiz: any): Observable<any> {
+    return this.http.put(`/api/quizes/${quiz._id}`, JSON.stringify(quiz), this.options);
+  }
+
+  deleteQuiz(quiz: any): Observable<any> {
+    return this.http.delete(`/api/quizes/${quiz._id}`, this.options);
+  }
+
+  getUsers(): Observable<any> {
+    return this.http.get('/api/users').map(res => res.json());
+  }
+
+  addUser(user: any): Observable<any> {
+    return this.http.post('/api/users', JSON.stringify(user), this.options)
   }
 
 }
